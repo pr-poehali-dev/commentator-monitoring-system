@@ -50,7 +50,10 @@ const Index = () => {
       date: "2024-01-20",
       time: "19:30",
       teams: "СКА - ЦСКА",
-      commentator: "Александр Волков",
+      commentators: [
+        { name: "Александр Волков", role: "Ведущий", status: "confirmed" },
+        { name: "Дмитрий Петров", role: "Эксперт", status: "assigned" }
+      ],
       status: "assigned",
     },
     {
@@ -58,7 +61,7 @@ const Index = () => {
       date: "2024-01-21",
       time: "18:00",
       teams: "Динамо - Спартак",
-      commentator: null,
+      commentators: [],
       status: "unassigned",
     },
     {
@@ -66,8 +69,11 @@ const Index = () => {
       date: "2024-01-22",
       time: "20:00",
       teams: "Локомотив - Йокерит",
-      commentator: "Михаил Сидоров",
-      status: "confirmed",
+      commentators: [
+        { name: "Михаил Сидоров", role: "Ведущий", status: "confirmed" },
+        { name: null, role: "Эксперт", status: "unassigned" }
+      ],
+      status: "partial",
     },
   ];
 
@@ -77,27 +83,54 @@ const Index = () => {
       date: "2024-01-15",
       time: "19:30",
       teams: "СКА - ЦСКА",
-      commentator: "Александр Волков",
-      rating: 4.8,
-      feedback: "Отличная работа, четкие комментарии"
+      commentators: [
+        { 
+          name: "Александр Волков", 
+          role: "Ведущий", 
+          rating: 4.8,
+          feedback: "Отличная работа, четкие комментарии"
+        },
+        { 
+          name: "Дмитрий Петров", 
+          role: "Эксперт", 
+          rating: 4.6,
+          feedback: "Хорошая аналитика"
+        }
+      ]
     },
     {
       id: 2,
       date: "2024-01-14",
       time: "18:00",
       teams: "Динамо - Спартак",
-      commentator: "Дмитрий Петров",
-      rating: 4.6,
-      feedback: "Хорошая подача, небольшие заминки"
+      commentators: [
+        { 
+          name: "Дмитрий Петров", 
+          role: "Ведущий", 
+          rating: 4.6,
+          feedback: "Хорошая подача, небольшие заминки"
+        },
+        { 
+          name: "Михаил Сидоров", 
+          role: "Эксперт", 
+          rating: null,
+          feedback: null
+        }
+      ]
     },
     {
       id: 3,
       date: "2024-01-13",
       time: "20:00",
       teams: "Локомотив - Йокерит",
-      commentator: "Михаил Сидоров",
-      rating: null,
-      feedback: null
+      commentators: [
+        { 
+          name: "Михаил Сидоров", 
+          role: "Ведущий", 
+          rating: null,
+          feedback: null
+        }
+      ]
     }
   ];
 
@@ -291,7 +324,7 @@ const Index = () => {
                     <TableHead>Дата</TableHead>
                     <TableHead>Время</TableHead>
                     <TableHead>Матч</TableHead>
-                    <TableHead>Комментатор</TableHead>
+                    <TableHead>Команда комментаторов</TableHead>
                     <TableHead>Статус</TableHead>
                     <TableHead>Действия</TableHead>
                   </TableRow>
@@ -305,12 +338,33 @@ const Index = () => {
                       <TableCell>{match.time}</TableCell>
                       <TableCell>{match.teams}</TableCell>
                       <TableCell>
-                        {match.commentator ? (
-                          <span className="font-medium">
-                            {match.commentator}
-                          </span>
+                        {match.commentators.length > 0 ? (
+                          <div className="space-y-2">
+                            {match.commentators.map((commentator, index) => (
+                              <div key={index} className="flex items-center space-x-2">
+                                <Badge variant="outline" className="text-xs">
+                                  {commentator.role}
+                                </Badge>
+                                {commentator.name ? (
+                                  <span className="font-medium text-sm">{commentator.name}</span>
+                                ) : (
+                                  <span className="text-gray-500 text-sm">Не назначен</span>
+                                )}
+                                <Badge 
+                                  variant={
+                                    commentator.status === "confirmed" ? "default" : 
+                                    commentator.status === "assigned" ? "secondary" : "destructive"
+                                  }
+                                  className="text-xs"
+                                >
+                                  {commentator.status === "confirmed" ? "✓" : 
+                                   commentator.status === "assigned" ? "?" : "×"}
+                                </Badge>
+                              </div>
+                            ))}
+                          </div>
                         ) : (
-                          <span className="text-gray-500">Не назначен</span>
+                          <span className="text-gray-500">Команда не назначена</span>
                         )}
                       </TableCell>
                       <TableCell>
@@ -320,20 +374,24 @@ const Index = () => {
                               ? "default"
                               : match.status === "assigned"
                                 ? "secondary"
-                                : "destructive"
+                                : match.status === "partial"
+                                  ? "outline"
+                                  : "destructive"
                           }
                         >
                           {match.status === "confirmed"
                             ? "Подтвержден"
                             : match.status === "assigned"
                               ? "Назначен"
-                              : "Не назначен"}
+                              : match.status === "partial"
+                                ? "Частично"
+                                : "Не назначен"}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
                           <Button variant="outline" size="sm">
-                            <Icon name="Edit" className="w-4 h-4" />
+                            <Icon name="Users" className="w-4 h-4" />
                           </Button>
                           <Button variant="outline" size="sm">
                             <Icon name="UserPlus" className="w-4 h-4" />
@@ -353,8 +411,8 @@ const Index = () => {
                         <TableHead>Дата</TableHead>
                         <TableHead>Время</TableHead>
                         <TableHead>Матч</TableHead>
-                        <TableHead>Комментатор</TableHead>
-                        <TableHead>Рейтинг</TableHead>
+                        <TableHead>Команда комментаторов</TableHead>
+                        <TableHead>Рейтинги</TableHead>
                         <TableHead>Действия</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -367,33 +425,44 @@ const Index = () => {
                           <TableCell>{match.time}</TableCell>
                           <TableCell>{match.teams}</TableCell>
                           <TableCell>
-                            <span className="font-medium">
-                              {match.commentator}
-                            </span>
+                            <div className="space-y-2">
+                              {match.commentators.map((commentator, index) => (
+                                <div key={index} className="flex items-center space-x-2">
+                                  <Badge variant="outline" className="text-xs">
+                                    {commentator.role}
+                                  </Badge>
+                                  <span className="font-medium text-sm">{commentator.name}</span>
+                                </div>
+                              ))}
+                            </div>
                           </TableCell>
                           <TableCell>
-                            {match.rating ? (
-                              <div className="flex items-center space-x-1">
-                                <Icon name="Star" className="w-4 h-4 text-yellow-400 fill-current" />
-                                <span className="font-medium">{match.rating}</span>
-                              </div>
-                            ) : (
-                              <Button variant="outline" size="sm">
-                                <Icon name="Star" className="w-4 h-4 mr-2" />
-                                Оценить
-                              </Button>
-                            )}
+                            <div className="space-y-2">
+                              {match.commentators.map((commentator, index) => (
+                                <div key={index} className="flex items-center space-x-2">
+                                  {commentator.rating ? (
+                                    <div className="flex items-center space-x-1">
+                                      <Icon name="Star" className="w-4 h-4 text-yellow-400 fill-current" />
+                                      <span className="font-medium text-sm">{commentator.rating}</span>
+                                    </div>
+                                  ) : (
+                                    <Button variant="outline" size="sm">
+                                      <Icon name="Star" className="w-4 h-4 mr-1" />
+                                      Оценить
+                                    </Button>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
                           </TableCell>
                           <TableCell>
                             <div className="flex space-x-2">
                               <Button variant="outline" size="sm">
                                 <Icon name="MessageSquare" className="w-4 h-4" />
                               </Button>
-                              {match.rating && (
-                                <Button variant="outline" size="sm">
-                                  <Icon name="Edit" className="w-4 h-4" />
-                                </Button>
-                              )}
+                              <Button variant="outline" size="sm">
+                                <Icon name="BarChart3" className="w-4 h-4" />
+                              </Button>
                             </div>
                           </TableCell>
                         </TableRow>
