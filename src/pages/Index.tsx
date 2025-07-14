@@ -47,7 +47,7 @@ const Index = () => {
   const upcomingMatches = [
     {
       id: 1,
-      date: "2024-01-15",
+      date: "2024-01-20",
       time: "19:30",
       teams: "СКА - ЦСКА",
       commentator: "Александр Волков",
@@ -55,7 +55,7 @@ const Index = () => {
     },
     {
       id: 2,
-      date: "2024-01-16",
+      date: "2024-01-21",
       time: "18:00",
       teams: "Динамо - Спартак",
       commentator: null,
@@ -63,12 +63,42 @@ const Index = () => {
     },
     {
       id: 3,
-      date: "2024-01-17",
+      date: "2024-01-22",
       time: "20:00",
       teams: "Локомотив - Йокерит",
       commentator: "Михаил Сидоров",
       status: "confirmed",
     },
+  ];
+
+  const completedMatches = [
+    {
+      id: 1,
+      date: "2024-01-15",
+      time: "19:30",
+      teams: "СКА - ЦСКА",
+      commentator: "Александр Волков",
+      rating: 4.8,
+      feedback: "Отличная работа, четкие комментарии"
+    },
+    {
+      id: 2,
+      date: "2024-01-14",
+      time: "18:00",
+      teams: "Динамо - Спартак",
+      commentator: "Дмитрий Петров",
+      rating: 4.6,
+      feedback: "Хорошая подача, небольшие заминки"
+    },
+    {
+      id: 3,
+      date: "2024-01-13",
+      time: "20:00",
+      teams: "Локомотив - Йокерит",
+      commentator: "Михаил Сидоров",
+      rating: null,
+      feedback: null
+    }
   ];
 
   const stats = [
@@ -247,7 +277,15 @@ const Index = () => {
                   Добавить матч
                 </Button>
               </div>
-              <Table>
+              
+              <Tabs defaultValue="upcoming" className="space-y-4">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="upcoming">Предстоящие</TabsTrigger>
+                  <TabsTrigger value="completed">Завершенные</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="upcoming">
+                  <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Дата</TableHead>
@@ -306,6 +344,64 @@ const Index = () => {
                   ))}
                 </TableBody>
               </Table>
+                </TabsContent>
+
+                <TabsContent value="completed">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Дата</TableHead>
+                        <TableHead>Время</TableHead>
+                        <TableHead>Матч</TableHead>
+                        <TableHead>Комментатор</TableHead>
+                        <TableHead>Рейтинг</TableHead>
+                        <TableHead>Действия</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {completedMatches.map((match) => (
+                        <TableRow key={match.id}>
+                          <TableCell className="font-medium">
+                            {match.date}
+                          </TableCell>
+                          <TableCell>{match.time}</TableCell>
+                          <TableCell>{match.teams}</TableCell>
+                          <TableCell>
+                            <span className="font-medium">
+                              {match.commentator}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            {match.rating ? (
+                              <div className="flex items-center space-x-1">
+                                <Icon name="Star" className="w-4 h-4 text-yellow-400 fill-current" />
+                                <span className="font-medium">{match.rating}</span>
+                              </div>
+                            ) : (
+                              <Button variant="outline" size="sm">
+                                <Icon name="Star" className="w-4 h-4 mr-2" />
+                                Оценить
+                              </Button>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Button variant="outline" size="sm">
+                                <Icon name="MessageSquare" className="w-4 h-4" />
+                              </Button>
+                              {match.rating && (
+                                <Button variant="outline" size="sm">
+                                  <Icon name="Edit" className="w-4 h-4" />
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TabsContent>
+              </Tabs>
             </Card>
           </TabsContent>
 
