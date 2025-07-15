@@ -26,6 +26,7 @@ import { useState } from "react";
 
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isTeamDialogOpen, setIsTeamDialogOpen] = useState(false);
   const [selectedCommentator, setSelectedCommentator] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -405,9 +406,105 @@ const Index = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">
-                            <Icon name="Users" className="w-4 h-4" />
-                          </Button>
+                          <Dialog open={isTeamDialogOpen} onOpenChange={setIsTeamDialogOpen}>
+                            <DialogTrigger asChild>
+                              <Button variant="outline" size="sm" onClick={() => setSelectedMatch(match)}>
+                                <Icon name="Users" className="w-4 h-4" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[600px]">
+                              <DialogHeader>
+                                <DialogTitle>Управление командой комментаторов</DialogTitle>
+                              </DialogHeader>
+                              <div className="space-y-4">
+                                <div className="border rounded-lg p-4 bg-gray-50">
+                                  <div className="flex justify-between items-center mb-2">
+                                    <h4 className="font-medium">Матч: {selectedMatch?.teams}</h4>
+                                    <Badge variant="outline">{selectedMatch?.date} в {selectedMatch?.time}</Badge>
+                                  </div>
+                                  <p className="text-sm text-gray-600">
+                                    Статус: <Badge variant={selectedMatch?.status === "confirmed" ? "default" : "secondary"}>
+                                      {selectedMatch?.status === "confirmed" ? "Подтвержден" : "Назначен"}
+                                    </Badge>
+                                  </p>
+                                </div>
+                                
+                                <div className="space-y-3">
+                                  <div className="flex justify-between items-center">
+                                    <h4 className="font-medium">Текущая команда</h4>
+                                    <Button size="sm" variant="outline">
+                                      <Icon name="UserPlus" className="w-4 h-4 mr-2" />
+                                      Добавить
+                                    </Button>
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    {selectedMatch?.commentators?.map((commentator, index) => (
+                                      <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                                        <div className="flex items-center space-x-3">
+                                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <Icon name="User" className="w-4 h-4 text-blue-600" />
+                                          </div>
+                                          <div>
+                                            <p className="font-medium">{commentator.name || "Не назначен"}</p>
+                                            <div className="flex items-center space-x-2">
+                                              <Badge variant="outline" className="text-xs">
+                                                {commentator.role}
+                                              </Badge>
+                                              <Badge 
+                                                variant={
+                                                  commentator.status === "confirmed" ? "default" : 
+                                                  commentator.status === "assigned" ? "secondary" : "destructive"
+                                                }
+                                                className="text-xs"
+                                              >
+                                                {commentator.status === "confirmed" ? "Подтвержден" : 
+                                                 commentator.status === "assigned" ? "Назначен" : "Ожидает"}
+                                              </Badge>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="flex space-x-2">
+                                          <Button variant="outline" size="sm">
+                                            <Icon name="Edit" className="w-4 h-4" />
+                                          </Button>
+                                          <Button variant="outline" size="sm">
+                                            <Icon name="MessageSquare" className="w-4 h-4" />
+                                          </Button>
+                                          <Button variant="outline" size="sm">
+                                            <Icon name="Trash2" className="w-4 h-4" />
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    )) || (
+                                      <div className="text-center py-8 text-gray-500">
+                                        <Icon name="Users" className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                                        <p>Команда не назначена</p>
+                                        <p className="text-sm">Добавьте комментаторов для матча</p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                                
+                                <div className="border-t pt-4">
+                                  <div className="flex justify-between items-center">
+                                    <div className="text-sm text-gray-600">
+                                      Всего назначено: {selectedMatch?.commentators?.length || 0} из 4
+                                    </div>
+                                    <div className="flex space-x-2">
+                                      <Button variant="outline" onClick={() => setIsTeamDialogOpen(false)}>
+                                        Закрыть
+                                      </Button>
+                                      <Button>
+                                        <Icon name="Check" className="w-4 h-4 mr-2" />
+                                        Подтвердить команду
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
                           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
                               <Button variant="outline" size="sm" onClick={() => setSelectedMatch(match)}>
