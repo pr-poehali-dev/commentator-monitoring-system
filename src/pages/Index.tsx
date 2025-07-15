@@ -12,8 +12,23 @@ import {
 } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
 import Icon from "@/components/ui/icon";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
 
 const Index = () => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedCommentator, setSelectedCommentator] = useState("");
+  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedMatch, setSelectedMatch] = useState(null);
   const commentators = [
     {
       id: 1,
@@ -393,9 +408,98 @@ const Index = () => {
                           <Button variant="outline" size="sm">
                             <Icon name="Users" className="w-4 h-4" />
                           </Button>
-                          <Button variant="outline" size="sm">
-                            <Icon name="UserPlus" className="w-4 h-4" />
-                          </Button>
+                          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                            <DialogTrigger asChild>
+                              <Button variant="outline" size="sm" onClick={() => setSelectedMatch(match)}>
+                                <Icon name="UserPlus" className="w-4 h-4" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[425px]">
+                              <DialogHeader>
+                                <DialogTitle>Назначить комментатора</DialogTitle>
+                              </DialogHeader>
+                              <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                  <Label htmlFor="match" className="text-right">
+                                    Матч
+                                  </Label>
+                                  <Input
+                                    id="match"
+                                    value={selectedMatch?.teams || ""}
+                                    className="col-span-3"
+                                    disabled
+                                  />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                  <Label htmlFor="role" className="text-right">
+                                    Роль
+                                  </Label>
+                                  <Select value={selectedRole} onValueChange={setSelectedRole}>
+                                    <SelectTrigger className="col-span-3">
+                                      <SelectValue placeholder="Выберите роль" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="host">Ведущий</SelectItem>
+                                      <SelectItem value="expert">Эксперт</SelectItem>
+                                      <SelectItem value="analyst">Аналитик</SelectItem>
+                                      <SelectItem value="reporter">Репортер</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                  <Label htmlFor="commentator" className="text-right">
+                                    Комментатор
+                                  </Label>
+                                  <Select value={selectedCommentator} onValueChange={setSelectedCommentator}>
+                                    <SelectTrigger className="col-span-3">
+                                      <SelectValue placeholder="Выберите комментатора" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {commentators.map((commentator) => (
+                                        <SelectItem key={commentator.id} value={commentator.id.toString()}>
+                                          <div className="flex items-center space-x-2">
+                                            <span>{commentator.name}</span>
+                                            <Badge variant="secondary" className="text-xs">
+                                              ★ {commentator.rating}
+                                            </Badge>
+                                          </div>
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                  <Label htmlFor="status" className="text-right">
+                                    Статус
+                                  </Label>
+                                  <Select defaultValue="assigned">
+                                    <SelectTrigger className="col-span-3">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="assigned">Назначен</SelectItem>
+                                      <SelectItem value="confirmed">Подтвержден</SelectItem>
+                                      <SelectItem value="pending">Ожидает</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                              <div className="flex justify-end space-x-2">
+                                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                                  Отмена
+                                </Button>
+                                <Button onClick={() => {
+                                  // Логика добавления комментатора
+                                  setIsDialogOpen(false);
+                                  setSelectedCommentator("");
+                                  setSelectedRole("");
+                                  setSelectedMatch(null);
+                                }}>
+                                  Назначить
+                                </Button>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
                         </div>
                       </TableCell>
                     </TableRow>
