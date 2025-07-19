@@ -27,6 +27,18 @@ import { useState } from "react";
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isTeamDialogOpen, setIsTeamDialogOpen] = useState(false);
+  const [isEditMatchOpen, setIsEditMatchOpen] = useState(false);
+  const [isDeleteMatchOpen, setIsDeleteMatchOpen] = useState(false);
+  const [isAddMatchOpen, setIsAddMatchOpen] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
+  const [isRatingOpen, setIsRatingOpen] = useState(false);
+  const [isReviewsOpen, setIsReviewsOpen] = useState(false);
+  const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
+  const [isAddCommentatorOpen, setIsAddCommentatorOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isEditAssignmentOpen, setIsEditAssignmentOpen] = useState(false);
+  const [isMessageOpen, setIsMessageOpen] = useState(false);
+  const [isDeleteAssignmentOpen, setIsDeleteAssignmentOpen] = useState(false);
   const [selectedCommentator, setSelectedCommentator] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -177,10 +189,68 @@ const Index = () => {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <Button variant="outline" size="sm">
-                <Icon name="Download" className="w-4 h-4 mr-2" />
-                Экспорт отчета
-              </Button>
+              <Dialog open={isExportOpen} onOpenChange={setIsExportOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Icon name="Download" className="w-4 h-4 mr-2" />
+                    Экспорт отчета
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[400px]">
+                  <DialogHeader>
+                    <DialogTitle>Экспорт отчета</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="report-type">Тип отчета</Label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Выберите тип отчета" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="matches">Отчет по матчам</SelectItem>
+                          <SelectItem value="commentators">Отчет по комментаторам</SelectItem>
+                          <SelectItem value="ratings">Отчет по рейтингам</SelectItem>
+                          <SelectItem value="schedule">Отчет по расписанию</SelectItem>
+                          <SelectItem value="full">Полный отчет</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="start-date">Период с</Label>
+                        <Input id="start-date" type="date" />
+                      </div>
+                      <div>
+                        <Label htmlFor="end-date">по</Label>
+                        <Input id="end-date" type="date" />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="format">Формат файла</Label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Выберите формат" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="excel">Excel (.xlsx)</SelectItem>
+                          <SelectItem value="csv">CSV (.csv)</SelectItem>
+                          <SelectItem value="pdf">PDF (.pdf)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex justify-end space-x-2 pt-4">
+                      <Button variant="outline" onClick={() => setIsExportOpen(false)}>
+                        Отмена
+                      </Button>
+                      <Button onClick={() => setIsExportOpen(false)}>
+                        <Icon name="Download" className="w-4 h-4 mr-2" />
+                        Скачать
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
               <Button size="sm">
                 <Icon name="Plus" className="w-4 h-4 mr-2" />
                 Добавить матч
@@ -321,9 +391,81 @@ const Index = () => {
             <Card className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold">Управление матчами</h3>
-                <Button size="sm">
-                  <Icon name="Plus" className="w-4 h-4 mr-2" />
-                  Добавить матч
+                <Dialog open={isAddMatchOpen} onOpenChange={setIsAddMatchOpen}>
+                  <DialogTrigger asChild>
+                    <Button size="sm">
+                      <Icon name="Plus" className="w-4 h-4 mr-2" />
+                      Добавить матч
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                      <DialogTitle>Добавить новый матч</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="team1">Команда 1</Label>
+                          <Input id="team1" placeholder="Название команды" />
+                        </div>
+                        <div>
+                          <Label htmlFor="team2">Команда 2</Label>
+                          <Input id="team2" placeholder="Название команды" />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="date">Дата</Label>
+                          <Input id="date" type="date" />
+                        </div>
+                        <div>
+                          <Label htmlFor="time">Время</Label>
+                          <Input id="time" type="time" />
+                        </div>
+                      </div>
+                      <div>
+                        <Label htmlFor="venue">Площадка</Label>
+                        <Input id="venue" placeholder="Место проведения" />
+                      </div>
+                      <div>
+                        <Label htmlFor="type">Тип матча</Label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Выберите тип" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="regular">Регулярный чемпионат</SelectItem>
+                            <SelectItem value="playoff">Плей-офф</SelectItem>
+                            <SelectItem value="friendly">Товарищеский</SelectItem>
+                            <SelectItem value="cup">Кубок</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="priority">Приоритет</Label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Выберите приоритет" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="high">Высокий</SelectItem>
+                            <SelectItem value="medium">Средний</SelectItem>
+                            <SelectItem value="low">Низкий</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex justify-end space-x-2 pt-4">
+                        <Button variant="outline" onClick={() => setIsAddMatchOpen(false)}>
+                          Отмена
+                        </Button>
+                        <Button onClick={() => setIsAddMatchOpen(false)}>
+                          <Icon name="Plus" className="w-4 h-4 mr-2" />
+                          Добавить матч
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
                 </Button>
               </div>
               
@@ -465,15 +607,220 @@ const Index = () => {
                                           </div>
                                         </div>
                                         <div className="flex space-x-2">
-                                          <Button variant="outline" size="sm">
-                                            <Icon name="Edit" className="w-4 h-4" />
-                                          </Button>
-                                          <Button variant="outline" size="sm">
-                                            <Icon name="MessageSquare" className="w-4 h-4" />
-                                          </Button>
-                                          <Button variant="outline" size="sm">
-                                            <Icon name="Trash2" className="w-4 h-4" />
-                                          </Button>
+                                          <Dialog open={isEditAssignmentOpen} onOpenChange={setIsEditAssignmentOpen}>
+                                            <DialogTrigger asChild>
+                                              <Button variant="outline" size="sm" onClick={() => setSelectedCommentator(commentator)}>
+                                                <Icon name="Edit" className="w-4 h-4" />
+                                              </Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="sm:max-w-[400px]">
+                                              <DialogHeader>
+                                                <DialogTitle>Редактировать назначение</DialogTitle>
+                                              </DialogHeader>
+                                              <div className="space-y-4">
+                                                <div className="border rounded-lg p-3 bg-gray-50">
+                                                  <div className="flex items-center space-x-3">
+                                                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                                      <Icon name="User" className="w-4 h-4 text-blue-600" />
+                                                    </div>
+                                                    <div>
+                                                      <p className="font-medium text-sm">{selectedCommentator?.name}</p>
+                                                      <p className="text-xs text-gray-600">Текущая роль: {selectedCommentator?.role}</p>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                
+                                                <div>
+                                                  <Label htmlFor="new-role">Новая роль</Label>
+                                                  <Select defaultValue={selectedCommentator?.role}>
+                                                    <SelectTrigger>
+                                                      <SelectValue placeholder="Выберите роль" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                      <SelectItem value="host">Ведущий</SelectItem>
+                                                      <SelectItem value="expert">Эксперт</SelectItem>
+                                                      <SelectItem value="analyst">Аналитик</SelectItem>
+                                                      <SelectItem value="reporter">Репортер</SelectItem>
+                                                    </SelectContent>
+                                                  </Select>
+                                                </div>
+                                                
+                                                <div>
+                                                  <Label htmlFor="status">Статус</Label>
+                                                  <Select defaultValue={selectedCommentator?.status}>
+                                                    <SelectTrigger>
+                                                      <SelectValue placeholder="Выберите статус" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                      <SelectItem value="assigned">Назначен</SelectItem>
+                                                      <SelectItem value="confirmed">Подтвержден</SelectItem>
+                                                      <SelectItem value="pending">Ожидает подтверждения</SelectItem>
+                                                    </SelectContent>
+                                                  </Select>
+                                                </div>
+                                                
+                                                <div>
+                                                  <Label htmlFor="notes">Примечания</Label>
+                                                  <textarea
+                                                    id="notes"
+                                                    className="w-full mt-2 p-3 border rounded-lg resize-none h-16"
+                                                    placeholder="Дополнительные заметки..."
+                                                  />
+                                                </div>
+                                                
+                                                <div className="flex justify-end space-x-2 pt-4">
+                                                  <Button variant="outline" onClick={() => setIsEditAssignmentOpen(false)}>
+                                                    Отмена
+                                                  </Button>
+                                                  <Button onClick={() => setIsEditAssignmentOpen(false)}>
+                                                    <Icon name="Check" className="w-4 h-4 mr-2" />
+                                                    Сохранить
+                                                  </Button>
+                                                </div>
+                                              </div>
+                                            </DialogContent>
+                                          </Dialog>
+                                          
+                                          <Dialog open={isMessageOpen} onOpenChange={setIsMessageOpen}>
+                                            <DialogTrigger asChild>
+                                              <Button variant="outline" size="sm" onClick={() => setSelectedCommentator(commentator)}>
+                                                <Icon name="MessageSquare" className="w-4 h-4" />
+                                              </Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="sm:max-w-[500px]">
+                                              <DialogHeader>
+                                                <DialogTitle>Отправить сообщение</DialogTitle>
+                                              </DialogHeader>
+                                              <div className="space-y-4">
+                                                <div className="border rounded-lg p-3 bg-gray-50">
+                                                  <div className="flex items-center space-x-3">
+                                                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                                      <Icon name="User" className="w-4 h-4 text-blue-600" />
+                                                    </div>
+                                                    <div>
+                                                      <p className="font-medium text-sm">{selectedCommentator?.name}</p>
+                                                      <p className="text-xs text-gray-600">{selectedCommentator?.role} • {selectedMatch?.teams}</p>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                
+                                                <div>
+                                                  <Label htmlFor="message-type">Тип сообщения</Label>
+                                                  <Select>
+                                                    <SelectTrigger>
+                                                      <SelectValue placeholder="Выберите тип" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                      <SelectItem value="reminder">Напоминание</SelectItem>
+                                                      <SelectItem value="instruction">Инструкция</SelectItem>
+                                                      <SelectItem value="schedule">Изменение расписания</SelectItem>
+                                                      <SelectItem value="general">Общее сообщение</SelectItem>
+                                                    </SelectContent>
+                                                  </Select>
+                                                </div>
+                                                
+                                                <div>
+                                                  <Label htmlFor="subject">Тема</Label>
+                                                  <Input id="subject" placeholder="Тема сообщения" />
+                                                </div>
+                                                
+                                                <div>
+                                                  <Label htmlFor="message-text">Сообщение</Label>
+                                                  <textarea
+                                                    id="message-text"
+                                                    className="w-full mt-2 p-3 border rounded-lg resize-none h-24"
+                                                    placeholder="Введите текст сообщения..."
+                                                  />
+                                                </div>
+                                                
+                                                <div className="flex items-center space-x-2">
+                                                  <input type="checkbox" id="urgent" className="rounded" />
+                                                  <Label htmlFor="urgent" className="text-sm">Срочное сообщение</Label>
+                                                </div>
+                                                
+                                                <div className="flex justify-end space-x-2 pt-4">
+                                                  <Button variant="outline" onClick={() => setIsMessageOpen(false)}>
+                                                    Отмена
+                                                  </Button>
+                                                  <Button onClick={() => setIsMessageOpen(false)}>
+                                                    <Icon name="Send" className="w-4 h-4 mr-2" />
+                                                    Отправить
+                                                  </Button>
+                                                </div>
+                                              </div>
+                                            </DialogContent>
+                                          </Dialog>
+                                          
+                                          <Dialog open={isDeleteAssignmentOpen} onOpenChange={setIsDeleteAssignmentOpen}>
+                                            <DialogTrigger asChild>
+                                              <Button variant="outline" size="sm" onClick={() => setSelectedCommentator(commentator)}>
+                                                <Icon name="Trash2" className="w-4 h-4" />
+                                              </Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="sm:max-w-[400px]">
+                                              <DialogHeader>
+                                                <DialogTitle>Удалить из команды</DialogTitle>
+                                              </DialogHeader>
+                                              <div className="space-y-4">
+                                                <div className="border rounded-lg p-4 bg-red-50 border-red-200">
+                                                  <div className="flex items-center space-x-3">
+                                                    <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                                      <Icon name="AlertTriangle" className="w-5 h-5 text-red-600" />
+                                                    </div>
+                                                    <div>
+                                                      <p className="font-medium text-red-900">Подтвердите удаление</p>
+                                                      <p className="text-sm text-red-700">
+                                                        Вы уверены, что хотите удалить {selectedCommentator?.name} из команды матча?
+                                                      </p>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                
+                                                <div className="border rounded-lg p-3 bg-gray-50">
+                                                  <div className="flex items-center space-x-3">
+                                                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                                      <Icon name="User" className="w-4 h-4 text-blue-600" />
+                                                    </div>
+                                                    <div>
+                                                      <p className="font-medium text-sm">{selectedCommentator?.name}</p>
+                                                      <p className="text-xs text-gray-600">{selectedCommentator?.role} • {selectedMatch?.teams}</p>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                
+                                                <div>
+                                                  <Label htmlFor="reason">Причина удаления (необязательно)</Label>
+                                                  <Select>
+                                                    <SelectTrigger>
+                                                      <SelectValue placeholder="Выберите причину" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                      <SelectItem value="unavailable">Недоступен</SelectItem>
+                                                      <SelectItem value="replacement">Замена</SelectItem>
+                                                      <SelectItem value="performance">Проблемы с качеством</SelectItem>
+                                                      <SelectItem value="schedule">Конфликт расписания</SelectItem>
+                                                      <SelectItem value="other">Другое</SelectItem>
+                                                    </SelectContent>
+                                                  </Select>
+                                                </div>
+                                                
+                                                <div className="flex items-center space-x-2">
+                                                  <input type="checkbox" id="notify" className="rounded" defaultChecked />
+                                                  <Label htmlFor="notify" className="text-sm">Уведомить комментатора об удалении</Label>
+                                                </div>
+                                                
+                                                <div className="flex justify-end space-x-2 pt-4">
+                                                  <Button variant="outline" onClick={() => setIsDeleteAssignmentOpen(false)}>
+                                                    Отмена
+                                                  </Button>
+                                                  <Button variant="destructive" onClick={() => setIsDeleteAssignmentOpen(false)}>
+                                                    <Icon name="Trash2" className="w-4 h-4 mr-2" />
+                                                    Удалить
+                                                  </Button>
+                                                </div>
+                                              </div>
+                                            </DialogContent>
+                                          </Dialog>
                                         </div>
                                       </div>
                                     )) || (
@@ -647,10 +994,87 @@ const Index = () => {
                                       <span className="font-medium text-sm">{commentator.rating}</span>
                                     </div>
                                   ) : (
-                                    <Button variant="outline" size="sm">
-                                      <Icon name="Star" className="w-4 h-4 mr-1" />
-                                      Оценить
-                                    </Button>
+                                    <Dialog open={isRatingOpen} onOpenChange={setIsRatingOpen}>
+                                      <DialogTrigger asChild>
+                                        <Button variant="outline" size="sm" onClick={() => setSelectedCommentator(commentator)}>
+                                          <Icon name="Star" className="w-4 h-4 mr-1" />
+                                          Оценить
+                                        </Button>
+                                      </DialogTrigger>
+                                      <DialogContent className="sm:max-w-[500px]">
+                                        <DialogHeader>
+                                          <DialogTitle>Оценить работу комментатора</DialogTitle>
+                                        </DialogHeader>
+                                        <div className="space-y-4">
+                                          <div className="border rounded-lg p-4 bg-gray-50">
+                                            <div className="flex items-center space-x-3">
+                                              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                                <Icon name="User" className="w-5 h-5 text-blue-600" />
+                                              </div>
+                                              <div>
+                                                <p className="font-medium">{selectedCommentator?.name}</p>
+                                                <p className="text-sm text-gray-600">{selectedCommentator?.role}</p>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          
+                                          <div>
+                                            <Label htmlFor="rating">Рейтинг (1-5 звезд)</Label>
+                                            <div className="flex space-x-2 mt-2">
+                                              {[1, 2, 3, 4, 5].map((star) => (
+                                                <button
+                                                  key={star}
+                                                  type="button"
+                                                  className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded"
+                                                >
+                                                  <Icon name="Star" className="w-6 h-6 text-gray-300 hover:text-yellow-400" />
+                                                </button>
+                                              ))}
+                                            </div>
+                                          </div>
+                                          
+                                          <div>
+                                            <Label htmlFor="review">Отзыв о работе</Label>
+                                            <textarea
+                                              id="review"
+                                              className="w-full mt-2 p-3 border rounded-lg resize-none h-24"
+                                              placeholder="Оставьте отзыв о качестве комментирования..."
+                                            />
+                                          </div>
+                                          
+                                          <div>
+                                            <Label htmlFor="categories">Оценка по критериям</Label>
+                                            <div className="space-y-2 mt-2">
+                                              {[
+                                                { label: "Знание игры", key: "knowledge" },
+                                                { label: "Эмоциональность", key: "emotion" },
+                                                { label: "Четкость речи", key: "clarity" },
+                                                { label: "Взаимодействие с коллегой", key: "teamwork" }
+                                              ].map((criteria) => (
+                                                <div key={criteria.key} className="flex justify-between items-center">
+                                                  <span className="text-sm">{criteria.label}</span>
+                                                  <div className="flex space-x-1">
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                      <Icon key={star} name="Star" className="w-4 h-4 text-gray-300 hover:text-yellow-400 cursor-pointer" />
+                                                    ))}
+                                                  </div>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          </div>
+                                          
+                                          <div className="flex justify-end space-x-2 pt-4">
+                                            <Button variant="outline" onClick={() => setIsRatingOpen(false)}>
+                                              Отмена
+                                            </Button>
+                                            <Button onClick={() => setIsRatingOpen(false)}>
+                                              <Icon name="Star" className="w-4 h-4 mr-2" />
+                                              Сохранить оценку
+                                            </Button>
+                                          </div>
+                                        </div>
+                                      </DialogContent>
+                                    </Dialog>
                                   )}
                                 </div>
                               ))}
@@ -658,12 +1082,180 @@ const Index = () => {
                           </TableCell>
                           <TableCell>
                             <div className="flex space-x-2">
-                              <Button variant="outline" size="sm">
-                                <Icon name="MessageSquare" className="w-4 h-4" />
-                              </Button>
-                              <Button variant="outline" size="sm">
-                                <Icon name="BarChart3" className="w-4 h-4" />
-                              </Button>
+                              <Dialog open={isReviewsOpen} onOpenChange={setIsReviewsOpen}>
+                                <DialogTrigger asChild>
+                                  <Button variant="outline" size="sm" onClick={() => setSelectedMatch(match)}>
+                                    <Icon name="MessageSquare" className="w-4 h-4" />
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[600px]">
+                                  <DialogHeader>
+                                    <DialogTitle>Отзывы о матче</DialogTitle>
+                                  </DialogHeader>
+                                  <div className="space-y-4">
+                                    <div className="border rounded-lg p-4 bg-gray-50">
+                                      <h4 className="font-medium mb-2">Матч: {selectedMatch?.teams}</h4>
+                                      <p className="text-sm text-gray-600">{selectedMatch?.date} в {selectedMatch?.time}</p>
+                                    </div>
+                                    
+                                    <div className="space-y-4 max-h-96 overflow-y-auto">
+                                      {selectedMatch?.commentators?.map((commentator, index) => (
+                                        <div key={index} className="border rounded-lg p-4">
+                                          <div className="flex items-center justify-between mb-3">
+                                            <div className="flex items-center space-x-3">
+                                              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                                <Icon name="User" className="w-4 h-4 text-blue-600" />
+                                              </div>
+                                              <div>
+                                                <p className="font-medium">{commentator.name}</p>
+                                                <p className="text-sm text-gray-600">{commentator.role}</p>
+                                              </div>
+                                            </div>
+                                            <div className="flex items-center space-x-1">
+                                              <Icon name="Star" className="w-4 h-4 text-yellow-400 fill-current" />
+                                              <span className="font-medium">{commentator.rating || "Не оценен"}</span>
+                                            </div>
+                                          </div>
+                                          
+                                          <div className="space-y-2">
+                                            <p className="text-sm text-gray-700">
+                                              "Отличное комментирование, эмоциональная подача, хорошее знание игроков и статистики."
+                                            </p>
+                                            <div className="flex justify-between text-xs text-gray-500">
+                                              <span>Администратор системы</span>
+                                              <span>2 часа назад</span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      )) || (
+                                        <div className="text-center py-8 text-gray-500">
+                                          <Icon name="MessageSquare" className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                                          <p>Отзывов пока нет</p>
+                                        </div>
+                                      )}
+                                    </div>
+                                    
+                                    <div className="flex justify-end pt-4">
+                                      <Button variant="outline" onClick={() => setIsReviewsOpen(false)}>
+                                        Закрыть
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
+                              
+                              <Dialog open={isAnalyticsOpen} onOpenChange={setIsAnalyticsOpen}>
+                                <DialogTrigger asChild>
+                                  <Button variant="outline" size="sm" onClick={() => setSelectedMatch(match)}>
+                                    <Icon name="BarChart3" className="w-4 h-4" />
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[700px]">
+                                  <DialogHeader>
+                                    <DialogTitle>Аналитика матча</DialogTitle>
+                                  </DialogHeader>
+                                  <div className="space-y-6">
+                                    <div className="border rounded-lg p-4 bg-gray-50">
+                                      <h4 className="font-medium mb-2">Матч: {selectedMatch?.teams}</h4>
+                                      <div className="grid grid-cols-2 gap-4 text-sm">
+                                        <div>Дата: {selectedMatch?.date}</div>
+                                        <div>Время: {selectedMatch?.time}</div>
+                                        <div>Статус: Завершен</div>
+                                        <div>Длительность: 2ч 47мин</div>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-2 gap-6">
+                                      <div>
+                                        <h4 className="font-medium mb-4">Статистика команды</h4>
+                                        <div className="space-y-3">
+                                          <div className="flex justify-between items-center">
+                                            <span className="text-sm">Средний рейтинг</span>
+                                            <div className="flex items-center space-x-1">
+                                              <Icon name="Star" className="w-4 h-4 text-yellow-400 fill-current" />
+                                              <span className="font-medium">4.7</span>
+                                            </div>
+                                          </div>
+                                          <div className="flex justify-between items-center">
+                                            <span className="text-sm">Время в эфире</span>
+                                            <span className="font-medium">2ч 47мин</span>
+                                          </div>
+                                          <div className="flex justify-between items-center">
+                                            <span className="text-sm">Количество отзывов</span>
+                                            <span className="font-medium">12</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      
+                                      <div>
+                                        <h4 className="font-medium mb-4">Оценки по критериям</h4>
+                                        <div className="space-y-3">
+                                          {[
+                                            { label: "Знание игры", value: 4.8 },
+                                            { label: "Эмоциональность", value: 4.6 },
+                                            { label: "Четкость речи", value: 4.9 },
+                                            { label: "Взаимодействие", value: 4.5 }
+                                          ].map((criteria) => (
+                                            <div key={criteria.label} className="space-y-1">
+                                              <div className="flex justify-between text-sm">
+                                                <span>{criteria.label}</span>
+                                                <span className="font-medium">{criteria.value}</span>
+                                              </div>
+                                              <div className="w-full bg-gray-200 rounded-full h-2">
+                                                <div 
+                                                  className="bg-blue-600 h-2 rounded-full" 
+                                                  style={{ width: `${(criteria.value / 5) * 100}%` }}
+                                                ></div>
+                                              </div>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    
+                                    <div>
+                                      <h4 className="font-medium mb-4">Индивидуальные показатели</h4>
+                                      <div className="space-y-2">
+                                        {selectedMatch?.commentators?.map((commentator, index) => (
+                                          <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                                            <div className="flex items-center space-x-3">
+                                              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                                <Icon name="User" className="w-4 h-4 text-blue-600" />
+                                              </div>
+                                              <div>
+                                                <p className="font-medium text-sm">{commentator.name}</p>
+                                                <p className="text-xs text-gray-600">{commentator.role}</p>
+                                              </div>
+                                            </div>
+                                            <div className="flex items-center space-x-4 text-sm">
+                                              <div className="text-center">
+                                                <div className="font-medium">{commentator.rating || "N/A"}</div>
+                                                <div className="text-xs text-gray-500">Рейтинг</div>
+                                              </div>
+                                              <div className="text-center">
+                                                <div className="font-medium">45мин</div>
+                                                <div className="text-xs text-gray-500">Время</div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        )) || (
+                                          <p className="text-center py-4 text-gray-500">Данные не найдены</p>
+                                        )}
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="flex justify-end space-x-2 pt-4">
+                                      <Button variant="outline" onClick={() => setIsAnalyticsOpen(false)}>
+                                        Закрыть
+                                      </Button>
+                                      <Button variant="outline">
+                                        <Icon name="Download" className="w-4 h-4 mr-2" />
+                                        Экспорт
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
                             </div>
                           </TableCell>
                         </TableRow>
@@ -679,10 +1271,101 @@ const Index = () => {
             <Card className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold">Профили комментаторов</h3>
-                <Button size="sm">
-                  <Icon name="UserPlus" className="w-4 h-4 mr-2" />
-                  Добавить комментатора
-                </Button>
+                <Dialog open={isAddCommentatorOpen} onOpenChange={setIsAddCommentatorOpen}>
+                  <DialogTrigger asChild>
+                    <Button size="sm">
+                      <Icon name="UserPlus" className="w-4 h-4 mr-2" />
+                      Добавить комментатора
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[600px]">
+                    <DialogHeader>
+                      <DialogTitle>Добавить нового комментатора</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 max-h-96 overflow-y-auto">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="firstName">Имя</Label>
+                          <Input id="firstName" placeholder="Введите имя" />
+                        </div>
+                        <div>
+                          <Label htmlFor="lastName">Фамилия</Label>
+                          <Input id="lastName" placeholder="Введите фамилию" />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" type="email" placeholder="email@example.com" />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="phone">Телефон</Label>
+                        <Input id="phone" placeholder="+7 (000) 000-00-00" />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="specialization">Специализация</Label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Выберите специализацию" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="hockey">Хоккей</SelectItem>
+                            <SelectItem value="football">Футбол</SelectItem>
+                            <SelectItem value="basketball">Баскетбол</SelectItem>
+                            <SelectItem value="tennis">Теннис</SelectItem>
+                            <SelectItem value="universal">Универсальный</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="experience">Опыт работы (лет)</Label>
+                        <Input id="experience" type="number" min="0" placeholder="0" />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="role">Предпочитаемая роль</Label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Выберите роль" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="host">Ведущий</SelectItem>
+                            <SelectItem value="expert">Эксперт</SelectItem>
+                            <SelectItem value="analyst">Аналитик</SelectItem>
+                            <SelectItem value="reporter">Репортер</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="bio">О себе</Label>
+                        <textarea
+                          id="bio"
+                          className="w-full mt-2 p-3 border rounded-lg resize-none h-20"
+                          placeholder="Краткая информация о себе и опыте работы..."
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="photo">Фотография</Label>
+                        <Input id="photo" type="file" accept="image/*" className="mt-2" />
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-end space-x-2 pt-4">
+                      <Button variant="outline" onClick={() => setIsAddCommentatorOpen(false)}>
+                        Отмена
+                      </Button>
+                      <Button onClick={() => setIsAddCommentatorOpen(false)}>
+                        <Icon name="UserPlus" className="w-4 h-4 mr-2" />
+                        Добавить
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {commentators.map((commentator) => (
@@ -727,14 +1410,210 @@ const Index = () => {
                       </div>
                     </div>
                     <div className="mt-4 flex space-x-2">
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <Icon name="Eye" className="w-4 h-4 mr-1" />
-                        Профиль
-                      </Button>
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <Icon name="Calendar" className="w-4 h-4 mr-1" />
-                        Назначить
-                      </Button>
+                      <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm" className="flex-1" onClick={() => setSelectedCommentator(commentator)}>
+                            <Icon name="Eye" className="w-4 h-4 mr-1" />
+                            Профиль
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[700px]">
+                          <DialogHeader>
+                            <DialogTitle>Профиль комментатора</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-6">
+                            <div className="flex items-center space-x-4">
+                              <img
+                                src={selectedCommentator?.avatar || "/img/default-avatar.jpg"}
+                                alt={selectedCommentator?.name}
+                                className="w-20 h-20 rounded-full object-cover"
+                              />
+                              <div>
+                                <h3 className="text-xl font-semibold">{selectedCommentator?.name}</h3>
+                                <p className="text-gray-600">Опыт работы: {selectedCommentator?.matches} матчей</p>
+                                <div className="flex items-center space-x-2 mt-2">
+                                  <div className="flex items-center space-x-1">
+                                    <Icon name="Star" className="w-4 h-4 text-yellow-400 fill-current" />
+                                    <span className="font-medium">{selectedCommentator?.rating}</span>
+                                  </div>
+                                  <Badge variant={selectedCommentator?.status === "active" ? "default" : "secondary"}>
+                                    {selectedCommentator?.status === "active" ? "Активен" : "Неактивен"}
+                                  </Badge>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div>
+                                <h4 className="font-medium mb-4">Статистика</h4>
+                                <div className="space-y-3">
+                                  <div className="flex justify-between">
+                                    <span className="text-sm text-gray-600">Всего матчей</span>
+                                    <span className="font-medium">{selectedCommentator?.matches}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-sm text-gray-600">Средний рейтинг</span>
+                                    <span className="font-medium">{selectedCommentator?.rating}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-sm text-gray-600">Последний матч</span>
+                                    <span className="font-medium">{selectedCommentator?.lastMatch}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-sm text-gray-600">Специализация</span>
+                                    <span className="font-medium">Хоккей</span>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <div>
+                                <h4 className="font-medium mb-4">Контактная информация</h4>
+                                <div className="space-y-3">
+                                  <div className="flex items-center space-x-2">
+                                    <Icon name="Mail" className="w-4 h-4 text-gray-400" />
+                                    <span className="text-sm">example@email.com</span>
+                                  </div>
+                                  <div className="flex items-center space-x-2">
+                                    <Icon name="Phone" className="w-4 h-4 text-gray-400" />
+                                    <span className="text-sm">+7 (000) 000-00-00</span>
+                                  </div>
+                                  <div className="flex items-center space-x-2">
+                                    <Icon name="MapPin" className="w-4 h-4 text-gray-400" />
+                                    <span className="text-sm">Москва</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <h4 className="font-medium mb-4">Недавние матчи</h4>
+                              <div className="space-y-2">
+                                {[
+                                  { date: "15 дек", match: "СКА - ЦСКА", rating: 4.8 },
+                                  { date: "12 дек", match: "Динамо - Спартак", rating: 4.6 },
+                                  { date: "10 дек", match: "Локомотив - Йокерит", rating: 4.9 }
+                                ].map((match, index) => (
+                                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                                    <div>
+                                      <p className="font-medium text-sm">{match.match}</p>
+                                      <p className="text-xs text-gray-600">{match.date}</p>
+                                    </div>
+                                    <div className="flex items-center space-x-1">
+                                      <Icon name="Star" className="w-4 h-4 text-yellow-400 fill-current" />
+                                      <span className="font-medium text-sm">{match.rating}</span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            
+                            <div className="flex justify-end space-x-2 pt-4">
+                              <Button variant="outline" onClick={() => setIsProfileOpen(false)}>
+                                Закрыть
+                              </Button>
+                              <Button variant="outline">
+                                <Icon name="Edit" className="w-4 h-4 mr-2" />
+                                Редактировать
+                              </Button>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                      
+                      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm" className="flex-1" onClick={() => setSelectedCommentator(commentator)}>
+                            <Icon name="Calendar" className="w-4 h-4 mr-1" />
+                            Назначить
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[500px]">
+                          <DialogHeader>
+                            <DialogTitle>Назначить комментатора на матч</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div className="border rounded-lg p-4 bg-gray-50">
+                              <div className="flex items-center space-x-3">
+                                <img
+                                  src={selectedCommentator?.avatar || "/img/default-avatar.jpg"}
+                                  alt={selectedCommentator?.name}
+                                  className="w-10 h-10 rounded-full object-cover"
+                                />
+                                <div>
+                                  <p className="font-medium">{selectedCommentator?.name}</p>
+                                  <div className="flex items-center space-x-2">
+                                    <Icon name="Star" className="w-4 h-4 text-yellow-400 fill-current" />
+                                    <span className="text-sm">{selectedCommentator?.rating}</span>
+                                    <span className="text-sm text-gray-600">• {selectedCommentator?.matches} матчей</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <Label htmlFor="match-select">Выберите матч</Label>
+                              <Select>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Доступные матчи" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="match1">СКА - ЦСКА • 20 дек в 19:30</SelectItem>
+                                  <SelectItem value="match2">Динамо - Спартак • 22 дек в 20:00</SelectItem>
+                                  <SelectItem value="match3">Локомотив - Йокерит • 25 дек в 18:00</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div>
+                              <Label htmlFor="role-select">Роль</Label>
+                              <Select>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Выберите роль" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="host">Ведущий</SelectItem>
+                                  <SelectItem value="expert">Эксперт</SelectItem>
+                                  <SelectItem value="analyst">Аналитик</SelectItem>
+                                  <SelectItem value="reporter">Репортер</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div>
+                              <Label htmlFor="priority">Приоритет</Label>
+                              <Select>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Выберите приоритет" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="high">Высокий</SelectItem>
+                                  <SelectItem value="medium">Средний</SelectItem>
+                                  <SelectItem value="low">Низкий</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div>
+                              <Label htmlFor="notes">Заметки</Label>
+                              <textarea
+                                id="notes"
+                                className="w-full mt-2 p-3 border rounded-lg resize-none h-20"
+                                placeholder="Дополнительные заметки для назначения..."
+                              />
+                            </div>
+                            
+                            <div className="flex justify-end space-x-2 pt-4">
+                              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                                Отмена
+                              </Button>
+                              <Button onClick={() => setIsDialogOpen(false)}>
+                                <Icon name="Calendar" className="w-4 h-4 mr-2" />
+                                Назначить
+                              </Button>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </Card>
                 ))}
