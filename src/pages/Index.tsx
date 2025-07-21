@@ -466,7 +466,6 @@ const Index = () => {
                     </div>
                   </DialogContent>
                 </Dialog>
-                </Button>
               </div>
               
               <Tabs defaultValue="upcoming" className="space-y-4">
@@ -1264,8 +1263,7 @@ const Index = () => {
                   </Table>
                 </TabsContent>
               </Tabs>
-            </Card>
-          </TabsContent>
+            </TabsContent>
 
           <TabsContent value="commentators" className="space-y-6">
             <Card className="p-6">
