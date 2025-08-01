@@ -29,10 +29,12 @@ const Index = () => {
   const [isTeamDialogOpen, setIsTeamDialogOpen] = useState(false);
   const [isAddMatchOpen, setIsAddMatchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isAssignOpen, setIsAssignOpen] = useState(false);
   const [selectedCommentator, setSelectedCommentator] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [selectedCommentatorProfile, setSelectedCommentatorProfile] = useState(null);
+  const [assignCommentator, setAssignCommentator] = useState(null);
   const commentators = [
     {
       id: 1,
@@ -809,7 +811,15 @@ const Index = () => {
                         <Icon name="Eye" className="w-4 h-4 mr-1" />
                         Профиль
                       </Button>
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => {
+                          setAssignCommentator(commentator);
+                          setIsAssignOpen(true);
+                        }}
+                      >
                         <Icon name="Calendar" className="w-4 h-4 mr-1" />
                         Назначить
                       </Button>
@@ -959,6 +969,90 @@ const Index = () => {
                 <Button>
                   <Icon name="Calendar" className="w-4 h-4 mr-2" />
                   Назначить на матч
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Диалог назначения комментатора */}
+      <Dialog open={isAssignOpen} onOpenChange={setIsAssignOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Назначить комментатора на матч</DialogTitle>
+          </DialogHeader>
+          {assignCommentator && (
+            <div className="space-y-6">
+              <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
+                <img
+                  src={assignCommentator.avatar}
+                  alt={assignCommentator.name}
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <div>
+                  <h4 className="font-semibold">{assignCommentator.name}</h4>
+                  <div className="flex items-center space-x-1">
+                    <Icon name="Star" className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                    <span className="text-sm text-muted-foreground">{assignCommentator.rating}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="match-select" className="text-sm font-medium">
+                    Выберите матч
+                  </Label>
+                  <Select>
+                    <SelectTrigger className="mt-2">
+                      <SelectValue placeholder="Выберите матч для назначения" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="match1">Манчестер Юнайтед - Ливерпуль (15:00, 15 янв)</SelectItem>
+                      <SelectItem value="match2">Челси - Арсенал (18:30, 16 янв)</SelectItem>
+                      <SelectItem value="match3">Манчестер Сити - Тоттенхэм (20:00, 17 янв)</SelectItem>
+                      <SelectItem value="match4">Реал Мадрид - Барселона (22:00, 18 янв)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="role-select" className="text-sm font-medium">
+                    Роль комментатора
+                  </Label>
+                  <Select>
+                    <SelectTrigger className="mt-2">
+                      <SelectValue placeholder="Выберите роль" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="main">Главный комментатор</SelectItem>
+                      <SelectItem value="expert">Эксперт</SelectItem>
+                      <SelectItem value="sideline">Репортер с поля</SelectItem>
+                      <SelectItem value="studio">Студийный аналитик</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="notes" className="text-sm font-medium">
+                    Дополнительные заметки
+                  </Label>
+                  <Input
+                    id="notes"
+                    className="mt-2"
+                    placeholder="Особые инструкции или заметки..."
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsAssignOpen(false)}>
+                  Отмена
+                </Button>
+                <Button onClick={() => setIsAssignOpen(false)}>
+                  <Icon name="Calendar" className="w-4 h-4 mr-2" />
+                  Назначить
                 </Button>
               </div>
             </div>
