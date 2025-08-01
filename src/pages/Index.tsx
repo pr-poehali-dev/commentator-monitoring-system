@@ -35,6 +35,8 @@ const Index = () => {
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [selectedCommentatorProfile, setSelectedCommentatorProfile] = useState(null);
   const [assignCommentator, setAssignCommentator] = useState(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [selectedMatchForChat, setSelectedMatchForChat] = useState(null);
   const commentators = [
     {
       id: 1,
@@ -730,7 +732,18 @@ const Index = () => {
                           </TableCell>
                           <TableCell>
                             <div className="flex space-x-2">
-                              <Button variant="outline" size="sm">
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedMatchForChat({
+                                    id: 1,
+                                    teams: 'Манчестер Юнайтед - Ливерпуль',
+                                    date: '15 янв, 15:00'
+                                  });
+                                  setIsChatOpen(true);
+                                }}
+                              >
                                 <Icon name="MessageSquare" className="w-4 h-4" />
                               </Button>
                               <Button variant="outline" size="sm">
@@ -1057,6 +1070,88 @@ const Index = () => {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Диалог чата матча */}
+      <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>Чат матча</DialogTitle>
+            {selectedMatchForChat && (
+              <p className="text-sm text-muted-foreground">
+                {selectedMatchForChat.teams} • {selectedMatchForChat.date}
+              </p>
+            )}
+          </DialogHeader>
+          
+          <div className="flex flex-col h-[500px]">
+            {/* Сообщения чата */}
+            <div className="flex-1 overflow-y-auto space-y-3 p-4 border rounded-lg bg-muted/20">
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
+                  А
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2">
+                    <span className="font-medium text-sm">Александр Волков</span>
+                    <span className="text-xs text-muted-foreground">10:30</span>
+                  </div>
+                  <p className="text-sm mt-1">Готов к эфиру! Проверил все оборудование, звук отличный.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-medium">
+                  Р
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2">
+                    <span className="font-medium text-sm">Режиссер</span>
+                    <span className="text-xs text-muted-foreground">10:32</span>
+                  </div>
+                  <p className="text-sm mt-1">Отлично! Через 25 минут начинаем предматчевую передачу.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white text-sm font-medium">
+                  М
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2">
+                    <span className="font-medium text-sm">Михаил Эксперт</span>
+                    <span className="text-xs text-muted-foreground">10:35</span>
+                  </div>
+                  <p className="text-sm mt-1">Подготовил статистику по последним 5 встречам команд. Все материалы готовы.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white text-sm font-medium">
+                  Т
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2">
+                    <span className="font-medium text-sm">Техник</span>
+                    <span className="text-xs text-muted-foreground">10:40</span>
+                  </div>
+                  <p className="text-sm mt-1">Камеры настроены, трансляция стабильна. Всё готово к началу!</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Поле ввода сообщения */}
+            <div className="flex items-center space-x-2 mt-4">
+              <Input
+                placeholder="Написать сообщение..."
+                className="flex-1"
+              />
+              <Button size="sm">
+                <Icon name="Send" className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
