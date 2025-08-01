@@ -37,6 +37,7 @@ const Index = () => {
   const [assignCommentator, setAssignCommentator] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedMatchForChat, setSelectedMatchForChat] = useState(null);
+  const [isAddCommentatorOpen, setIsAddCommentatorOpen] = useState(false);
   const commentators = [
     {
       id: 1,
@@ -764,7 +765,7 @@ const Index = () => {
             <Card className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold">Профили комментаторов</h3>
-                <Button size="sm">
+                <Button size="sm" onClick={() => setIsAddCommentatorOpen(true)}>
                   <Icon name="UserPlus" className="w-4 h-4 mr-2" />
                   Добавить комментатора
                 </Button>
@@ -1151,6 +1152,82 @@ const Index = () => {
                 <Icon name="Send" className="w-4 h-4" />
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Диалог добавления комментатора */}
+      <Dialog open={isAddCommentatorOpen} onOpenChange={setIsAddCommentatorOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Добавить комментатора</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Имя и фамилия</label>
+              <Input placeholder="Введите полное имя" />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Специализация</label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите специализацию" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="football">Футбол</SelectItem>
+                  <SelectItem value="basketball">Баскетбол</SelectItem>
+                  <SelectItem value="hockey">Хоккей</SelectItem>
+                  <SelectItem value="tennis">Теннис</SelectItem>
+                  <SelectItem value="universal">Универсальная</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Опыт работы</label>
+              <Input placeholder="Например: 5 лет" />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Рейтинг</label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите рейтинг" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5">⭐⭐⭐⭐⭐ Отлично</SelectItem>
+                  <SelectItem value="4">⭐⭐⭐⭐ Хорошо</SelectItem>
+                  <SelectItem value="3">⭐⭐⭐ Удовлетворительно</SelectItem>
+                  <SelectItem value="2">⭐⭐ Плохо</SelectItem>
+                  <SelectItem value="1">⭐ Очень плохо</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Контактная информация</label>
+              <Input placeholder="Телефон или email" />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Заметки</label>
+              <textarea 
+                className="w-full h-20 px-3 py-2 text-sm border border-input rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                placeholder="Дополнительная информация о комментаторе..."
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-2 mt-6">
+            <Button variant="outline" onClick={() => setIsAddCommentatorOpen(false)}>
+              Отмена
+            </Button>
+            <Button onClick={() => setIsAddCommentatorOpen(false)}>
+              <Icon name="UserPlus" className="w-4 h-4 mr-2" />
+              Добавить
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
