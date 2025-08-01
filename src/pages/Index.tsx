@@ -27,6 +27,7 @@ import { useState } from "react";
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isTeamDialogOpen, setIsTeamDialogOpen] = useState(false);
+  const [isAddMatchOpen, setIsAddMatchOpen] = useState(false);
   const [selectedCommentator, setSelectedCommentator] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -321,10 +322,77 @@ const Index = () => {
             <Card className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold">Управление матчами</h3>
-                <Button size="sm">
-                  <Icon name="Plus" className="w-4 h-4 mr-2" />
-                  Добавить матч
-                </Button>
+                <Dialog open={isAddMatchOpen} onOpenChange={setIsAddMatchOpen}>
+                  <DialogTrigger asChild>
+                    <Button size="sm">
+                      <Icon name="Plus" className="w-4 h-4 mr-2" />
+                      Добавить матч
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Добавить новый матч</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="team1" className="text-right">
+                          Команда 1
+                        </Label>
+                        <Input
+                          id="team1"
+                          defaultValue=""
+                          className="col-span-3"
+                          placeholder="Название команды"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="team2" className="text-right">
+                          Команда 2
+                        </Label>
+                        <Input
+                          id="team2"
+                          defaultValue=""
+                          className="col-span-3"
+                          placeholder="Название команды"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="date" className="text-right">
+                          Дата
+                        </Label>
+                        <Input
+                          id="date"
+                          type="datetime-local"
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="tournament" className="text-right">
+                          Турнир
+                        </Label>
+                        <Select>
+                          <SelectTrigger className="col-span-3">
+                            <SelectValue placeholder="Выберите турнир" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="premier-league">Английская Премьер-лига</SelectItem>
+                            <SelectItem value="champions-league">Лига чемпионов</SelectItem>
+                            <SelectItem value="la-liga">Ла Лига</SelectItem>
+                            <SelectItem value="bundesliga">Бундеслига</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="flex justify-end space-x-2">
+                      <Button variant="outline" onClick={() => setIsAddMatchOpen(false)}>
+                        Отмена
+                      </Button>
+                      <Button onClick={() => setIsAddMatchOpen(false)}>
+                        Создать матч
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
               
               <Tabs defaultValue="upcoming" className="space-y-4">
