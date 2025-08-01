@@ -28,9 +28,11 @@ const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isTeamDialogOpen, setIsTeamDialogOpen] = useState(false);
   const [isAddMatchOpen, setIsAddMatchOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [selectedCommentator, setSelectedCommentator] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedMatch, setSelectedMatch] = useState(null);
+  const [selectedCommentatorProfile, setSelectedCommentatorProfile] = useState(null);
   const commentators = [
     {
       id: 1,
@@ -795,7 +797,15 @@ const Index = () => {
                       </div>
                     </div>
                     <div className="mt-4 flex space-x-2">
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => {
+                          setSelectedCommentatorProfile(commentator);
+                          setIsProfileOpen(true);
+                        }}
+                      >
                         <Icon name="Eye" className="w-4 h-4 mr-1" />
                         Профиль
                       </Button>
@@ -877,6 +887,84 @@ const Index = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Диалог профиля комментатора */}
+      <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Профиль комментатора</DialogTitle>
+          </DialogHeader>
+          {selectedCommentatorProfile && (
+            <div className="space-y-6">
+              <div className="flex items-center space-x-4">
+                <img
+                  src={selectedCommentatorProfile.avatar}
+                  alt={selectedCommentatorProfile.name}
+                  className="w-20 h-20 rounded-full object-cover"
+                />
+                <div>
+                  <h3 className="text-xl font-semibold">{selectedCommentatorProfile.name}</h3>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <Icon name="Star" className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    <span className="font-semibold">{selectedCommentatorProfile.rating}</span>
+                    <Badge variant={selectedCommentatorProfile.status === 'active' ? 'default' : 'secondary'}>
+                      {selectedCommentatorProfile.status === 'active' ? 'Активен' : 'Неактивен'}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-muted-foreground">Всего матчей</Label>
+                  <div className="text-2xl font-bold">{selectedCommentatorProfile.matches}</div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-muted-foreground">Последний матч</Label>
+                  <div className="text-sm">{selectedCommentatorProfile.lastMatch}</div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Специализация</Label>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="outline">Футбол</Badge>
+                  <Badge variant="outline">Хоккей</Badge>
+                  <Badge variant="outline">Баскетбол</Badge>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Статистика выступлений</Label>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Качество комментариев</span>
+                    <span className="text-sm font-medium">92%</span>
+                  </div>
+                  <Progress value={92} className="h-2" />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Пунктуальность</span>
+                    <span className="text-sm font-medium">98%</span>
+                  </div>
+                  <Progress value={98} className="h-2" />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsProfileOpen(false)}>
+                  Закрыть
+                </Button>
+                <Button>
+                  <Icon name="Calendar" className="w-4 h-4 mr-2" />
+                  Назначить на матч
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
