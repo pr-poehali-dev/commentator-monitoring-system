@@ -1608,7 +1608,7 @@ const Index = () => {
                   <Progress value={95} className="h-2" />
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* График активности */}
             <Card className="p-6">
