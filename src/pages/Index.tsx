@@ -791,7 +791,68 @@ const Index = () => {
                                     homeTeam: 'Манчестер Юнайтед',
                                     awayTeam: 'Ливерпуль',
                                     date: '15 янв, 15:00',
-                                    venue: 'Олд Траффорд'
+                                    venue: 'Олд Траффорд',
+                                    overallRating: 4.6,
+                                    totalRatings: 237,
+                                    duration: '97 минут',
+                                    commentators: [
+                                      {
+                                        name: 'Дмитрий Губерниев',
+                                        role: 'Главный комментатор',
+                                        rating: 4.8,
+                                        totalRatings: 156,
+                                        expertise: ['Футбол', 'Хоккей', 'Биатлон'],
+                                        experience: '15 лет',
+                                        ratings: {
+                                          professionalism: 94,
+                                          gameKnowledge: 96,
+                                          emotionality: 85,
+                                          voiceAndDiction: 92
+                                        },
+                                        feedback: [
+                                          { text: 'Отличная подача материала, профессиональный подход', rating: 5, user: '@user456' },
+                                          { text: 'Очень хорошо знает игру, интересные факты', rating: 5, user: '@sport_expert' },
+                                          { text: 'Иногда слишком эмоционально, но в целом хорошо', rating: 4, user: '@viewer123' }
+                                        ]
+                                      },
+                                      {
+                                        name: 'Александр Мостовой',
+                                        role: 'Эксперт-аналитик',
+                                        rating: 4.5,
+                                        totalRatings: 134,
+                                        expertise: ['Футбол', 'Тактический анализ'],
+                                        experience: '8 лет',
+                                        ratings: {
+                                          professionalism: 88,
+                                          gameKnowledge: 98,
+                                          emotionality: 76,
+                                          voiceAndDiction: 86
+                                        },
+                                        feedback: [
+                                          { text: 'Глубокие знания тактики, отличный анализ', rating: 5, user: '@tactics_fan' },
+                                          { text: 'Хороший анализ, но голос немного монотонный', rating: 4, user: '@casual_viewer' },
+                                          { text: 'Профессионально объясняет сложные моменты', rating: 5, user: '@football_coach' }
+                                        ]
+                                      },
+                                      {
+                                        name: 'Мария Комиссарова',
+                                        role: 'Спортивная журналистка',
+                                        rating: 4.3,
+                                        totalRatings: 98,
+                                        expertise: ['Интервью', 'Репортажи'],
+                                        experience: '6 лет',
+                                        ratings: {
+                                          professionalism: 91,
+                                          gameKnowledge: 82,
+                                          emotionality: 89,
+                                          voiceAndDiction: 94
+                                        },
+                                        feedback: [
+                                          { text: 'Отличные интервью, приятный голос', rating: 5, user: '@sports_lover' },
+                                          { text: 'Хорошая подача, но не хватает глубины анализа', rating: 4, user: '@analyst_fan' }
+                                        ]
+                                      }
+                                    ]
                                   });
                                   setIsAnalyticsOpen(true);
                                 }}
@@ -1563,6 +1624,35 @@ const Index = () => {
           </DialogHeader>
           
           <div className="space-y-6">
+            {/* Общий рейтинг матча */}
+            <Card className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Общий рейтинг матча</h3>
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <div className="flex text-yellow-400">
+                        {[1,2,3,4,5].map((star) => (
+                          <Icon key={star} name="Star" className="w-6 h-6 fill-current" />
+                        ))}
+                      </div>
+                      <span className="text-3xl font-bold">{selectedMatchForAnalytics?.overallRating}</span>
+                    </div>
+                    <div className="text-gray-500">
+                      <p className="text-sm">Основано на {selectedMatchForAnalytics?.totalRatings} оценках</p>
+                      <p className="text-xs">Длительность: {selectedMatchForAnalytics?.duration}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-indigo-600">
+                    {((selectedMatchForAnalytics?.commentators?.reduce((sum, c) => sum + (c.rating || 0), 0) || 0) / (selectedMatchForAnalytics?.commentators?.length || 1)).toFixed(1)}
+                  </div>
+                  <p className="text-sm text-gray-500">Средняя оценка<br/>комментаторов</p>
+                </div>
+              </div>
+            </Card>
+
             {/* Оценки комментаторов */}
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-4">Оценки комментаторов</h3>
@@ -1577,17 +1667,22 @@ const Index = () => {
                         <div>
                           <h4 className="font-medium">{commentator.name}</h4>
                           <p className="text-sm text-gray-500">{commentator.role}</p>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <span className="text-xs bg-gray-100 px-2 py-1 rounded">{commentator.experience}</span>
+                            {commentator.expertise?.slice(0, 2).map((skill, idx) => (
+                              <span key={idx} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">{skill}</span>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        {commentator.rating ? (
+                      <div className="flex items-center space-x-4">
+                        <div className="text-right">
                           <div className="flex items-center space-x-1">
                             <Icon name="Star" className="w-5 h-5 text-yellow-400 fill-current" />
-                            <span className="font-medium">{commentator.rating}</span>
+                            <span className="font-medium text-lg">{commentator.rating}</span>
                           </div>
-                        ) : (
-                          <span className="text-sm text-gray-400">Не оценен</span>
-                        )}
+                          <p className="text-xs text-gray-500">{commentator.totalRatings} оценок</p>
+                        </div>
                       </div>
                     </div>
                     
@@ -1630,29 +1725,19 @@ const Index = () => {
                     <div className="mt-4 pt-3 border-t">
                       <p className="text-sm font-medium mb-2">Последние отзывы:</p>
                       <div className="space-y-2">
-                        <div className="text-sm p-2 bg-gray-50 rounded">
-                          <p>"Отличная подача материала, профессиональный подход"</p>
-                          <div className="flex items-center mt-1">
-                            <div className="flex text-yellow-400 mr-2">
-                              {[1,2,3,4,5].map((star) => (
-                                <Icon key={star} name="Star" className="w-3 h-3 fill-current" />
-                              ))}
+                        {commentator.feedback?.slice(0, 3).map((review, idx) => (
+                          <div key={idx} className="text-sm p-2 bg-gray-50 rounded">
+                            <p>"{review.text}"</p>
+                            <div className="flex items-center mt-1">
+                              <div className="flex text-yellow-400 mr-2">
+                                {[1,2,3,4,5].map((star) => (
+                                  <Icon key={star} name="Star" className={`w-3 h-3 ${star <= review.rating ? 'fill-current' : 'text-gray-300'}`} />
+                                ))}
+                              </div>
+                              <span className="text-xs text-gray-500">{review.user}</span>
                             </div>
-                            <span className="text-xs text-gray-500">@user456</span>
                           </div>
-                        </div>
-                        <div className="text-sm p-2 bg-gray-50 rounded">
-                          <p>"Хорошие знания, но иногда слишком эмоционально"</p>
-                          <div className="flex items-center mt-1">
-                            <div className="flex text-yellow-400 mr-2">
-                              {[1,2,3,4].map((star) => (
-                                <Icon key={star} name="Star" className="w-3 h-3 fill-current" />
-                              ))}
-                              <Icon name="Star" className="w-3 h-3 text-gray-300" />
-                            </div>
-                            <span className="text-xs text-gray-500">@sport_fan</span>
-                          </div>
-                        </div>
+                        ))}
                       </div>
                     </div>
                   </div>
