@@ -40,6 +40,7 @@ const Index = () => {
   const [isAddCommentatorOpen, setIsAddCommentatorOpen] = useState(false);
   const [isAssignCommentatorOpen, setIsAssignCommentatorOpen] = useState(false);
   const [isEditCommentatorOpen, setIsEditCommentatorOpen] = useState(false);
+  const [isChatCommentatorOpen, setIsChatCommentatorOpen] = useState(false);
   const commentators = [
     {
       id: 1,
@@ -552,7 +553,14 @@ const Index = () => {
                                           >
                                             <Icon name="Edit" className="w-4 h-4" />
                                           </Button>
-                                          <Button variant="outline" size="sm">
+                                          <Button 
+                                            variant="outline" 
+                                            size="sm"
+                                            onClick={() => {
+                                              setSelectedCommentator(commentator);
+                                              setIsChatCommentatorOpen(true);
+                                            }}
+                                          >
                                             <Icon name="MessageSquare" className="w-4 h-4" />
                                           </Button>
                                           <Button variant="outline" size="sm">
@@ -1431,6 +1439,81 @@ const Index = () => {
               <Icon name="Save" className="w-4 h-4 mr-2" />
               Сохранить
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Диалог чата с комментатором */}
+      <Dialog open={isChatCommentatorOpen} onOpenChange={setIsChatCommentatorOpen}>
+        <DialogContent className="sm:max-w-[600px] h-[600px]">
+          <DialogHeader>
+            <DialogTitle>Чат с комментатором</DialogTitle>
+            <p className="text-sm text-gray-600">
+              {selectedCommentator ? selectedCommentator.name : "Комментатор"}
+            </p>
+          </DialogHeader>
+          
+          <div className="flex flex-col h-full">
+            {/* История сообщений */}
+            <div className="flex-1 overflow-y-auto p-4 bg-gray-50 rounded-lg space-y-3">
+              <div className="flex items-start space-x-2">
+                <div className="bg-blue-500 text-white p-2 rounded-lg max-w-xs">
+                  <p className="text-sm">Привет! Готов к матчу завтра?</p>
+                  <span className="text-xs opacity-75">14:32</span>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-2 justify-end">
+                <div className="bg-gray-200 p-2 rounded-lg max-w-xs">
+                  <p className="text-sm">Да, все готово! Изучил составы команд.</p>
+                  <span className="text-xs text-gray-600">14:35</span>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-2">
+                <div className="bg-blue-500 text-white p-2 rounded-lg max-w-xs">
+                  <p className="text-sm">Отлично! Не забудь про статистику последних встреч.</p>
+                  <span className="text-xs opacity-75">14:40</span>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-2 justify-end">
+                <div className="bg-gray-200 p-2 rounded-lg max-w-xs">
+                  <p className="text-sm">Конечно! Уже подготовил все материалы. 👍</p>
+                  <span className="text-xs text-gray-600">14:42</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Быстрые ответы */}
+            <div className="py-3">
+              <p className="text-sm font-medium mb-2">Быстрые сообщения:</p>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" size="sm">
+                  Подтвердить участие
+                </Button>
+                <Button variant="outline" size="sm">
+                  Изменить время
+                </Button>
+                <Button variant="outline" size="sm">
+                  Задать вопрос
+                </Button>
+                <Button variant="outline" size="sm">
+                  Отправить документы
+                </Button>
+              </div>
+            </div>
+            
+            {/* Поле ввода */}
+            <div className="flex space-x-2 pt-3 border-t">
+              <Input 
+                placeholder="Введите сообщение..." 
+                className="flex-1"
+              />
+              <Button>
+                <Icon name="Send" className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
