@@ -43,6 +43,8 @@ const Index = () => {
   const [isChatCommentatorOpen, setIsChatCommentatorOpen] = useState(false);
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
   const [selectedMatchForAnalytics, setSelectedMatchForAnalytics] = useState(null);
+  const [isRatingOpen, setIsRatingOpen] = useState(false);
+  const [ratingCommentator, setRatingCommentator] = useState(null);
   const commentators = [
     {
       id: 1,
@@ -741,7 +743,21 @@ const Index = () => {
                                       <span className="font-medium text-sm">{commentator.rating}</span>
                                     </div>
                                   ) : (
-                                    <Button variant="outline" size="sm">
+                                    <Button 
+                                      variant="outline" 
+                                      size="sm"
+                                      onClick={() => {
+                                        setRatingCommentator({
+                                          ...commentator,
+                                          matchInfo: {
+                                            homeTeam: match.homeTeam,
+                                            awayTeam: match.awayTeam,
+                                            date: match.date
+                                          }
+                                        });
+                                        setIsRatingOpen(true);
+                                      }}
+                                    >
                                       <Icon name="Star" className="w-4 h-4 mr-1" />
                                       Оценить
                                     </Button>
@@ -1680,6 +1696,125 @@ const Index = () => {
             <Button>
               <Icon name="Download" className="w-4 h-4 mr-2" />
               Скачать отчет
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Диалог оценки комментатора */}
+      <Dialog open={isRatingOpen} onOpenChange={setIsRatingOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Оценить комментатора</DialogTitle>
+            <p className="text-sm text-gray-600">
+              {ratingCommentator ? 
+                `${ratingCommentator.name} • ${ratingCommentator.matchInfo?.homeTeam} vs ${ratingCommentator.matchInfo?.awayTeam}` : 
+                "Комментатор"
+              }
+            </p>
+          </DialogHeader>
+          
+          <div className="space-y-6">
+            {/* Общая оценка */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium">Общая оценка</label>
+              <div className="flex items-center space-x-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    className="p-1 hover:scale-110 transition-transform"
+                  >
+                    <Icon name="Star" className="w-8 h-8 text-yellow-400 fill-current hover:text-yellow-500" />
+                  </button>
+                ))}
+                <span className="text-sm text-gray-500 ml-4">5.0</span>
+              </div>
+            </div>
+
+            {/* Критерии оценки */}
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="text-sm font-medium">Профессионализм</label>
+                  <div className="flex items-center space-x-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Icon key={star} name="Star" className="w-4 h-4 text-yellow-400 fill-current" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="text-sm font-medium">Знание игры</label>
+                  <div className="flex items-center space-x-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Icon key={star} name="Star" className="w-4 h-4 text-yellow-400 fill-current" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="text-sm font-medium">Эмоциональность</label>
+                  <div className="flex items-center space-x-1">
+                    {[1, 2, 3, 4].map((star) => (
+                      <Icon key={star} name="Star" className="w-4 h-4 text-yellow-400 fill-current" />
+                    ))}
+                    <Icon name="Star" className="w-4 h-4 text-gray-300" />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="text-sm font-medium">Голос и дикция</label>
+                  <div className="flex items-center space-x-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Icon key={star} name="Star" className="w-4 h-4 text-yellow-400 fill-current" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Комментарий */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Комментарий (необязательно)</label>
+              <textarea 
+                className="w-full h-24 px-3 py-2 text-sm border border-input rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                placeholder="Поделитесь своим мнением о работе комментатора..."
+              />
+            </div>
+
+            {/* Рекомендации */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Рекомендовать для</label>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary" className="cursor-pointer hover:bg-gray-300">
+                  Футбол
+                </Badge>
+                <Badge variant="secondary" className="cursor-pointer hover:bg-gray-300">
+                  Баскетбол
+                </Badge>
+                <Badge variant="secondary" className="cursor-pointer hover:bg-gray-300">
+                  Хоккей
+                </Badge>
+                <Badge variant="outline" className="cursor-pointer hover:bg-gray-50">
+                  Теннис
+                </Badge>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-2 mt-6">
+            <Button variant="outline" onClick={() => setIsRatingOpen(false)}>
+              Отмена
+            </Button>
+            <Button onClick={() => setIsRatingOpen(false)}>
+              <Icon name="Star" className="w-4 h-4 mr-2" />
+              Сохранить оценку
             </Button>
           </div>
         </DialogContent>
