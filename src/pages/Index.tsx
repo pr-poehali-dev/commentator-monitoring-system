@@ -39,6 +39,8 @@ const Index = () => {
   const [selectedMatchForChat, setSelectedMatchForChat] = useState(null);
   const [isAddCommentatorOpen, setIsAddCommentatorOpen] = useState(false);
   const [isAssignCommentatorOpen, setIsAssignCommentatorOpen] = useState(false);
+  const [isEditCommentatorOpen, setIsEditCommentatorOpen] = useState(false);
+  const [selectedCommentator, setSelectedCommentator] = useState(null);
   const commentators = [
     {
       id: 1,
@@ -541,7 +543,14 @@ const Index = () => {
                                           </div>
                                         </div>
                                         <div className="flex space-x-2">
-                                          <Button variant="outline" size="sm">
+                                          <Button 
+                                            variant="outline" 
+                                            size="sm"
+                                            onClick={() => {
+                                              setSelectedCommentator(commentator);
+                                              setIsEditCommentatorOpen(true);
+                                            }}
+                                          >
                                             <Icon name="Edit" className="w-4 h-4" />
                                           </Button>
                                           <Button variant="outline" size="sm">
@@ -1320,6 +1329,108 @@ const Index = () => {
             <Button onClick={() => setIsAssignCommentatorOpen(false)}>
               <Icon name="UserCheck" className="w-4 h-4 mr-2" />
               Назначить
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Диалог редактирования комментатора */}
+      <Dialog open={isEditCommentatorOpen} onOpenChange={setIsEditCommentatorOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Редактировать назначение</DialogTitle>
+            <p className="text-sm text-gray-600">
+              {selectedCommentator ? selectedCommentator.name : "Комментатор"}
+            </p>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Статус</label>
+              <Select defaultValue={selectedCommentator?.status || "assigned"}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите статус" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="confirmed">✅ Подтвержден</SelectItem>
+                  <SelectItem value="assigned">📋 Назначен</SelectItem>
+                  <SelectItem value="pending">⏳ Ожидает</SelectItem>
+                  <SelectItem value="cancelled">❌ Отменен</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Роль</label>
+              <Select defaultValue={selectedCommentator?.role || "main"}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите роль" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="main">Главный комментатор</SelectItem>
+                  <SelectItem value="expert">Эксперт</SelectItem>
+                  <SelectItem value="sideline">Репортер с поля</SelectItem>
+                  <SelectItem value="analyst">Аналитик</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Время работы</label>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-xs text-gray-500">Начало</label>
+                  <Input 
+                    type="time" 
+                    defaultValue={selectedCommentator?.startTime || ""}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500">Окончание</label>
+                  <Input 
+                    type="time" 
+                    defaultValue={selectedCommentator?.endTime || ""}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Ставка за матч</label>
+              <Input 
+                placeholder="0" 
+                type="number"
+                defaultValue={selectedCommentator?.fee || ""}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Заметки</label>
+              <textarea 
+                className="w-full h-20 px-3 py-2 text-sm border border-input rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                placeholder="Дополнительные заметки или требования..."
+                defaultValue={selectedCommentator?.notes || ""}
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-2 mt-6">
+            <Button variant="outline" onClick={() => setIsEditCommentatorOpen(false)}>
+              Отмена
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={() => {
+                setIsEditCommentatorOpen(false);
+                setSelectedCommentator(null);
+              }}
+            >
+              <Icon name="Trash2" className="w-4 h-4 mr-2" />
+              Удалить
+            </Button>
+            <Button onClick={() => setIsEditCommentatorOpen(false)}>
+              <Icon name="Save" className="w-4 h-4 mr-2" />
+              Сохранить
             </Button>
           </div>
         </DialogContent>
