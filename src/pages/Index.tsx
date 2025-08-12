@@ -1563,130 +1563,108 @@ const Index = () => {
           </DialogHeader>
           
           <div className="space-y-6">
-            {/* Основная статистика */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="p-4">
-                <div className="flex items-center space-x-2">
-                  <Icon name="Users" className="w-5 h-5 text-blue-500" />
-                  <div>
-                    <p className="text-sm text-gray-600">Зрителей онлайн</p>
-                    <p className="text-2xl font-bold">2.4K</p>
-                  </div>
-                </div>
-              </Card>
-              
-              <Card className="p-4">
-                <div className="flex items-center space-x-2">
-                  <Icon name="MessageCircle" className="w-5 h-5 text-green-500" />
-                  <div>
-                    <p className="text-sm text-gray-600">Комментариев</p>
-                    <p className="text-2xl font-bold">156</p>
-                  </div>
-                </div>
-              </Card>
-              
-              <Card className="p-4">
-                <div className="flex items-center space-x-2">
-                  <Icon name="Star" className="w-5 h-5 text-yellow-500" />
-                  <div>
-                    <p className="text-sm text-gray-600">Рейтинг трансляции</p>
-                    <p className="text-2xl font-bold">4.7</p>
-                  </div>
-                </div>
-              </Card>
-            </div>
-
-            {/* Качество комментариев */}
+            {/* Оценки комментаторов */}
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Качество комментариев</h3>
+              <h3 className="text-lg font-semibold mb-4">Оценки комментаторов</h3>
               <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm">Профессионализм</span>
-                    <span className="text-sm font-medium">92%</span>
+                {selectedMatchForAnalytics?.commentators?.map((commentator, index) => (
+                  <div key={index} className="p-4 border rounded-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                          <Icon name="User" className="w-5 h-5 text-gray-500" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium">{commentator.name}</h4>
+                          <p className="text-sm text-gray-500">{commentator.role}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {commentator.rating ? (
+                          <div className="flex items-center space-x-1">
+                            <Icon name="Star" className="w-5 h-5 text-yellow-400 fill-current" />
+                            <span className="font-medium">{commentator.rating}</span>
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-400">Не оценен</span>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Детальные оценки */}
+                    <div className="space-y-3">
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-sm text-gray-600">Профессионализм</span>
+                          <span className="text-sm font-medium">{Math.floor(Math.random() * 20) + 80}%</span>
+                        </div>
+                        <Progress value={Math.floor(Math.random() * 20) + 80} className="h-2" />
+                      </div>
+                      
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-sm text-gray-600">Знание игры</span>
+                          <span className="text-sm font-medium">{Math.floor(Math.random() * 20) + 80}%</span>
+                        </div>
+                        <Progress value={Math.floor(Math.random() * 20) + 80} className="h-2" />
+                      </div>
+                      
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-sm text-gray-600">Эмоциональность</span>
+                          <span className="text-sm font-medium">{Math.floor(Math.random() * 20) + 80}%</span>
+                        </div>
+                        <Progress value={Math.floor(Math.random() * 20) + 80} className="h-2" />
+                      </div>
+                      
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-sm text-gray-600">Голос и дикция</span>
+                          <span className="text-sm font-medium">{Math.floor(Math.random() * 20) + 80}%</span>
+                        </div>
+                        <Progress value={Math.floor(Math.random() * 20) + 80} className="h-2" />
+                      </div>
+                    </div>
+                    
+                    {/* Отзывы о комментаторе */}
+                    <div className="mt-4 pt-3 border-t">
+                      <p className="text-sm font-medium mb-2">Последние отзывы:</p>
+                      <div className="space-y-2">
+                        <div className="text-sm p-2 bg-gray-50 rounded">
+                          <p>"Отличная подача материала, профессиональный подход"</p>
+                          <div className="flex items-center mt-1">
+                            <div className="flex text-yellow-400 mr-2">
+                              {[1,2,3,4,5].map((star) => (
+                                <Icon key={star} name="Star" className="w-3 h-3 fill-current" />
+                              ))}
+                            </div>
+                            <span className="text-xs text-gray-500">@user456</span>
+                          </div>
+                        </div>
+                        <div className="text-sm p-2 bg-gray-50 rounded">
+                          <p>"Хорошие знания, но иногда слишком эмоционально"</p>
+                          <div className="flex items-center mt-1">
+                            <div className="flex text-yellow-400 mr-2">
+                              {[1,2,3,4].map((star) => (
+                                <Icon key={star} name="Star" className="w-3 h-3 fill-current" />
+                              ))}
+                              <Icon name="Star" className="w-3 h-3 text-gray-300" />
+                            </div>
+                            <span className="text-xs text-gray-500">@sport_fan</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <Progress value={92} className="h-2" />
-                </div>
-                
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm">Эмоциональность</span>
-                    <span className="text-sm font-medium">88%</span>
-                  </div>
-                  <Progress value={88} className="h-2" />
-                </div>
-                
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm">Знание игры</span>
-                    <span className="text-sm font-medium">95%</span>
-                  </div>
-                  <Progress value={95} className="h-2" />
-                </div>
+                ))}
               </div>
             </Card>
 
-            {/* График активности */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Активность аудитории</h3>
-              <div className="h-40 bg-gray-50 rounded-lg flex items-end justify-center p-4">
-                <div className="flex items-end space-x-2">
-                  <div className="w-6 h-16 bg-blue-500 rounded-t"></div>
-                  <div className="w-6 h-24 bg-blue-500 rounded-t"></div>
-                  <div className="w-6 h-20 bg-blue-500 rounded-t"></div>
-                  <div className="w-6 h-32 bg-blue-500 rounded-t"></div>
-                  <div className="w-6 h-28 bg-blue-500 rounded-t"></div>
-                  <div className="w-6 h-36 bg-blue-500 rounded-t"></div>
-                  <div className="w-6 h-24 bg-blue-500 rounded-t"></div>
-                </div>
-              </div>
-              <div className="flex justify-between text-xs text-gray-500 mt-2">
-                <span>14:00</span>
-                <span>14:30</span>
-                <span>15:00</span>
-                <span>15:30</span>
-                <span>16:00</span>
-                <span>16:30</span>
-                <span>17:00</span>
-              </div>
-            </Card>
 
-            {/* Отзывы зрителей */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Отзывы зрителей</h3>
-              <div className="space-y-3">
-                <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="flex-1">
-                    <p className="text-sm">"Отличные комментарии! Очень профессионально."</p>
-                    <div className="flex items-center mt-1">
-                      <div className="flex text-yellow-400">
-                        <Icon name="Star" className="w-3 h-3" />
-                        <Icon name="Star" className="w-3 h-3" />
-                        <Icon name="Star" className="w-3 h-3" />
-                        <Icon name="Star" className="w-3 h-3" />
-                        <Icon name="Star" className="w-3 h-3" />
-                      </div>
-                      <span className="text-xs text-gray-500 ml-2">@user123</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="flex-1">
-                    <p className="text-sm">"Хороший анализ игры, но можно добавить больше статистики."</p>
-                    <div className="flex items-center mt-1">
-                      <div className="flex text-yellow-400">
-                        <Icon name="Star" className="w-3 h-3" />
-                        <Icon name="Star" className="w-3 h-3" />
-                        <Icon name="Star" className="w-3 h-3" />
-                        <Icon name="Star" className="w-3 h-3" />
-                      </div>
-                      <span className="text-xs text-gray-500 ml-2">@football_fan</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Card>
+
+
+
+
           </div>
 
           <div className="flex justify-end space-x-2 mt-6">
