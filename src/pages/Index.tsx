@@ -30,7 +30,7 @@ const Index = () => {
   const [isAddMatchOpen, setIsAddMatchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAssignOpen, setIsAssignOpen] = useState(false);
-  const [selectedCommentator, setSelectedCommentator] = useState("");
+  const [selectedCommentator, setSelectedCommentator] = useState(null);
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [selectedCommentatorProfile, setSelectedCommentatorProfile] = useState(null);
@@ -40,7 +40,6 @@ const Index = () => {
   const [isAddCommentatorOpen, setIsAddCommentatorOpen] = useState(false);
   const [isAssignCommentatorOpen, setIsAssignCommentatorOpen] = useState(false);
   const [isEditCommentatorOpen, setIsEditCommentatorOpen] = useState(false);
-  const [selectedCommentator, setSelectedCommentator] = useState(null);
   const commentators = [
     {
       id: 1,
