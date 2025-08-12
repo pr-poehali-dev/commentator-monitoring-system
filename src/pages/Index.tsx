@@ -38,6 +38,7 @@ const Index = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedMatchForChat, setSelectedMatchForChat] = useState(null);
   const [isAddCommentatorOpen, setIsAddCommentatorOpen] = useState(false);
+  const [isAssignCommentatorOpen, setIsAssignCommentatorOpen] = useState(false);
   const commentators = [
     {
       id: 1,
@@ -507,7 +508,7 @@ const Index = () => {
                                 <div className="space-y-3">
                                   <div className="flex justify-between items-center">
                                     <h4 className="font-medium">Текущая команда</h4>
-                                    <Button size="sm" variant="outline">
+                                    <Button size="sm" variant="outline" onClick={() => setIsAssignCommentatorOpen(true)}>
                                       <Icon name="UserPlus" className="w-4 h-4 mr-2" />
                                       Добавить
                                     </Button>
@@ -1227,6 +1228,98 @@ const Index = () => {
             <Button onClick={() => setIsAddCommentatorOpen(false)}>
               <Icon name="UserPlus" className="w-4 h-4 mr-2" />
               Добавить
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Диалог назначения комментатора на матч */}
+      <Dialog open={isAssignCommentatorOpen} onOpenChange={setIsAssignCommentatorOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Назначить комментатора на матч</DialogTitle>
+            <p className="text-sm text-gray-600">
+              {selectedMatch ? `${selectedMatch.homeTeam} vs ${selectedMatch.awayTeam}` : "Выбранный матч"}
+            </p>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Выбрать комментатора</label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите комментатора из списка" />
+                </SelectTrigger>
+                <SelectContent>
+                  {commentators.map((commentator) => (
+                    <SelectItem key={commentator.id} value={commentator.id.toString()}>
+                      <div className="flex items-center space-x-2">
+                        <span>{commentator.name}</span>
+                        <span className="text-xs text-gray-500">({commentator.sport})</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Роль в команде</label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите роль" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="main">Главный комментатор</SelectItem>
+                  <SelectItem value="expert">Эксперт</SelectItem>
+                  <SelectItem value="sideline">Репортер с поля</SelectItem>
+                  <SelectItem value="analyst">Аналитик</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Время работы</label>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Input placeholder="Время начала" type="time" />
+                </div>
+                <div>
+                  <Input placeholder="Время окончания" type="time" />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Приоритет</label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите приоритет" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="high">🔴 Высокий</SelectItem>
+                  <SelectItem value="medium">🟡 Средний</SelectItem>
+                  <SelectItem value="low">🟢 Низкий</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Комментарии</label>
+              <textarea 
+                className="w-full h-20 px-3 py-2 text-sm border border-input rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                placeholder="Дополнительные заметки или требования..."
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-2 mt-6">
+            <Button variant="outline" onClick={() => setIsAssignCommentatorOpen(false)}>
+              Отмена
+            </Button>
+            <Button onClick={() => setIsAssignCommentatorOpen(false)}>
+              <Icon name="UserCheck" className="w-4 h-4 mr-2" />
+              Назначить
             </Button>
           </div>
         </DialogContent>
