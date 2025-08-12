@@ -41,6 +41,8 @@ const Index = () => {
   const [isAssignCommentatorOpen, setIsAssignCommentatorOpen] = useState(false);
   const [isEditCommentatorOpen, setIsEditCommentatorOpen] = useState(false);
   const [isChatCommentatorOpen, setIsChatCommentatorOpen] = useState(false);
+  const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
+  const [selectedMatchForAnalytics, setSelectedMatchForAnalytics] = useState(null);
   const commentators = [
     {
       id: 1,
@@ -764,7 +766,20 @@ const Index = () => {
                               >
                                 <Icon name="MessageSquare" className="w-4 h-4" />
                               </Button>
-                              <Button variant="outline" size="sm">
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedMatchForAnalytics({
+                                    id: 1,
+                                    homeTeam: 'Манчестер Юнайтед',
+                                    awayTeam: 'Ливерпуль',
+                                    date: '15 янв, 15:00',
+                                    venue: 'Олд Траффорд'
+                                  });
+                                  setIsAnalyticsOpen(true);
+                                }}
+                              >
                                 <Icon name="BarChart3" className="w-4 h-4" />
                               </Button>
                             </div>
@@ -1514,6 +1529,158 @@ const Index = () => {
                 <Icon name="Send" className="w-4 h-4" />
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Диалог аналитики матча */}
+      <Dialog open={isAnalyticsOpen} onOpenChange={setIsAnalyticsOpen}>
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Аналитика матча</DialogTitle>
+            <p className="text-sm text-gray-600">
+              {selectedMatchForAnalytics ? 
+                `${selectedMatchForAnalytics.homeTeam} vs ${selectedMatchForAnalytics.awayTeam}` : 
+                "Выбранный матч"
+              }
+            </p>
+          </DialogHeader>
+          
+          <div className="space-y-6">
+            {/* Основная статистика */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card className="p-4">
+                <div className="flex items-center space-x-2">
+                  <Icon name="Users" className="w-5 h-5 text-blue-500" />
+                  <div>
+                    <p className="text-sm text-gray-600">Зрителей онлайн</p>
+                    <p className="text-2xl font-bold">2.4K</p>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card className="p-4">
+                <div className="flex items-center space-x-2">
+                  <Icon name="MessageCircle" className="w-5 h-5 text-green-500" />
+                  <div>
+                    <p className="text-sm text-gray-600">Комментариев</p>
+                    <p className="text-2xl font-bold">156</p>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card className="p-4">
+                <div className="flex items-center space-x-2">
+                  <Icon name="Star" className="w-5 h-5 text-yellow-500" />
+                  <div>
+                    <p className="text-sm text-gray-600">Рейтинг трансляции</p>
+                    <p className="text-2xl font-bold">4.7</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* Качество комментариев */}
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Качество комментариев</h3>
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm">Профессионализм</span>
+                    <span className="text-sm font-medium">92%</span>
+                  </div>
+                  <Progress value={92} className="h-2" />
+                </div>
+                
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm">Эмоциональность</span>
+                    <span className="text-sm font-medium">88%</span>
+                  </div>
+                  <Progress value={88} className="h-2" />
+                </div>
+                
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm">Знание игры</span>
+                    <span className="text-sm font-medium">95%</span>
+                  </div>
+                  <Progress value={95} className="h-2" />
+                </div>
+              </div>
+            </div>
+
+            {/* График активности */}
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Активность аудитории</h3>
+              <div className="h-40 bg-gray-50 rounded-lg flex items-end justify-center p-4">
+                <div className="flex items-end space-x-2">
+                  <div className="w-6 h-16 bg-blue-500 rounded-t"></div>
+                  <div className="w-6 h-24 bg-blue-500 rounded-t"></div>
+                  <div className="w-6 h-20 bg-blue-500 rounded-t"></div>
+                  <div className="w-6 h-32 bg-blue-500 rounded-t"></div>
+                  <div className="w-6 h-28 bg-blue-500 rounded-t"></div>
+                  <div className="w-6 h-36 bg-blue-500 rounded-t"></div>
+                  <div className="w-6 h-24 bg-blue-500 rounded-t"></div>
+                </div>
+              </div>
+              <div className="flex justify-between text-xs text-gray-500 mt-2">
+                <span>14:00</span>
+                <span>14:30</span>
+                <span>15:00</span>
+                <span>15:30</span>
+                <span>16:00</span>
+                <span>16:30</span>
+                <span>17:00</span>
+              </div>
+            </Card>
+
+            {/* Отзывы зрителей */}
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Отзывы зрителей</h3>
+              <div className="space-y-3">
+                <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="flex-1">
+                    <p className="text-sm">"Отличные комментарии! Очень профессионально."</p>
+                    <div className="flex items-center mt-1">
+                      <div className="flex text-yellow-400">
+                        <Icon name="Star" className="w-3 h-3" />
+                        <Icon name="Star" className="w-3 h-3" />
+                        <Icon name="Star" className="w-3 h-3" />
+                        <Icon name="Star" className="w-3 h-3" />
+                        <Icon name="Star" className="w-3 h-3" />
+                      </div>
+                      <span className="text-xs text-gray-500 ml-2">@user123</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="flex-1">
+                    <p className="text-sm">"Хороший анализ игры, но можно добавить больше статистики."</p>
+                    <div className="flex items-center mt-1">
+                      <div className="flex text-yellow-400">
+                        <Icon name="Star" className="w-3 h-3" />
+                        <Icon name="Star" className="w-3 h-3" />
+                        <Icon name="Star" className="w-3 h-3" />
+                        <Icon name="Star" className="w-3 h-3" />
+                      </div>
+                      <span className="text-xs text-gray-500 ml-2">@football_fan</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          <div className="flex justify-end space-x-2 mt-6">
+            <Button variant="outline" onClick={() => setIsAnalyticsOpen(false)}>
+              Закрыть
+            </Button>
+            <Button>
+              <Icon name="Download" className="w-4 h-4 mr-2" />
+              Скачать отчет
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
